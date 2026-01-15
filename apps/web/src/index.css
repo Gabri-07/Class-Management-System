@@ -15,3 +15,4 @@ html, body { height: 100%; }
 
 .animate-bounce-slow { animation: bounce-slow 4s infinite ease-in-out; }
 .animate-pulse-slow  { animation: pulse-slow 3s infinite ease-in-out; }
+
