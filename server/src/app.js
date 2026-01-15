@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 
 const authRoutes = require("./routes/auth.routes");
 const studentRoutes = require("./routes/student.routes");
+const timetableRoutes = require("./routes/timetable.routes");
 
 const app = express();
 
@@ -18,5 +19,9 @@ app.get("/", (req, res) => res.send("CMS API running ✅"));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
+app.use("/api/timetable", timetableRoutes);
 
 module.exports = app;
+
+
+

@@ -7,4 +7,10 @@ const createStudentSchema = z.object({
   studentId: z.string().min(2),
 });
 
-module.exports = { createStudentSchema };
+//  Student profile update schema
+const updateMyProfileSchema = z.object({
+  fullName: z.string().min(2).optional(),
+  password: z.string().min(6).optional(),
+});
+
+module.exports = { createStudentSchema, updateMyProfileSchema };

@@ -1,14 +1,31 @@
 const router = require("express").Router();
-const { login, me } = require("../controllers/auth.controller");
-const { loginSchema } = require("../validators/auth.schema");
-const { authRequired } = require("../middlewares/auth.middleware");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const User = require("../models/User.model");
 
-router.post("/login", (req, res, next) => {
-  const parsed = loginSchema.safeParse(req.body);
-  if (!parsed.success) return res.status(400).json({ message: "Validation error", errors: parsed.error.issues });
-  next();
-}, login);
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-router.get("/me", authRequired, me);
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) return res.status(401).json({ message: "Invalid credentials" });
+
+    const ok = await bcrypt.compare(password, user.passwordHash);
+    if (!ok) return res.status(401).json({ message: "Invalid credentials" });
+
+    const accessToken = jwt.sign(
+      { id: user._id, role: user.role, email: user.email },
+      process.env.JWT_ACCESS_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    return res.json({
+      accessToken,
+      user: { id: user._id, email: user.email, role: user.role, fullName: user.fullName },
+    });
+  } catch (err) {
+    return res.status(500).json({ message: "Login failed" });
+  }
+});
 
 module.exports = router;

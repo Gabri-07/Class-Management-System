@@ -2,7 +2,7 @@ import logo from "../Assets/Landing Logo.png";
 
 export default function AlgeonLoader() {
   return (
-    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white">
+    <div className="fixed inset-0 z-9999 flex flex-col items-center justify-center bg-white">
       <style>{`
         @keyframes algeonBar {
           0%   { transform: translateX(-120%); }

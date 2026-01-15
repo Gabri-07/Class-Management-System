@@ -1,3 +1,11 @@
+// src/pages/Landing.jsx (COMPLETE UPDATED FILE)
+// ✅ Timetable loads from MongoDB via GET /api/timetable
+// ✅ Removed hardcoded timetable array
+// ✅ Keeps your existing design 100%
+// ✅ Shows loading + error + empty state nicely
+// ✅ Sorts timetable as Grade 6 -> Grade 11 (NOT alphabetical)
+
+import { useEffect, useState } from "react";
 import {
   Play,
   CheckCircle2,
@@ -6,7 +14,6 @@ import {
   BookOpen,
   Clock,
   Shield,
-  Star,
   Facebook,
   Twitter,
   Instagram,
@@ -14,6 +21,9 @@ import {
 } from "lucide-react";
 
 import LoginForm from "../components/LoginForm";
+
+// ✅ API (make sure this file exists: src/services/timetableApi.js)
+import { fetchTimetable } from "../services/timetableApi";
 
 import Man from "../Assets/Man.png";
 import learnImg from "../Assets/think.jpg";
@@ -25,6 +35,9 @@ import successImg from "../Assets/exam.jpg";
 import logo from "../Assets/Landing_Logo_icon.png";
 
 export default function LandingPage() {
+  // -------------------------
+  // WHY WE ARE BEST CARDS
+  // -------------------------
   const cards = [
     {
       title: "Learn Complex Topics Simply",
@@ -76,15 +89,86 @@ export default function LandingPage() {
     },
   ];
 
-  const timetable = [
-    { grade: "Grade 6", day: "Thursday", time: "4:00 PM – 6:00 PM" },
-    { grade: "Grade 7", day: "Wednesday", time: "4:00 PM – 7:00 PM" },
-    { grade: "Grade 8", day: "Saturday", time: "7:00 AM – 9:30 AM" },
-    { grade: "Grade 9", day: "Sunday", time: "1:30 PM – 4:00 PM" },
-    { grade: "Grade 10", day: "Saturday", time: "11:00 AM – 3:00 PM" },
-    { grade: "Grade 11", day: "Friday", time: "7:00 PM – 10:00 PM" },
-    { grade: "Grade 11", day: "Saturday", time: "3:00 PM – 6:30 PM" },
-  ];
+  // -------------------------
+  // TIMETABLE: FROM DB (API)
+  // -------------------------
+  const [timetable, setTimetable] = useState([]);
+  const [ttLoading, setTtLoading] = useState(true);
+  const [ttError, setTtError] = useState("");
+
+  // ✅ Grade order (custom)
+  const gradeOrder = {
+    "Grade 6": 0,
+    "Grade 7": 1,
+    "Grade 8": 2,
+    "Grade 9": 3,
+    "Grade 10": 4,
+    "Grade 11": 5,
+  };
+
+  // ✅ Day order (custom)
+  const dayOrder = {
+    Monday: 0,
+    Tuesday: 1,
+    Wednesday: 2,
+    Thursday: 3,
+    Friday: 4,
+    Saturday: 5,
+    Sunday: 6,
+  };
+
+  // ✅ Convert start time to minutes for sorting
+  function timeToMinutes(t = "") {
+    // accepts: "4:00 PM – 6:00 PM" or "4:00PM - 6:00PM"
+    const start = t.split("–")[0]?.split("-")[0]?.trim() || "";
+    const m = start.match(/(\d{1,2})(?::(\d{2}))?\s*(AM|PM)/i);
+    if (!m) return 999999;
+
+    let hh = parseInt(m[1], 10);
+    let mm = parseInt(m[2] || "0", 10);
+    const ap = m[3].toUpperCase();
+
+    if (ap === "PM" && hh !== 12) hh += 12;
+    if (ap === "AM" && hh === 12) hh = 0;
+
+    return hh * 60 + mm;
+  }
+
+  useEffect(() => {
+    let mounted = true;
+
+    (async () => {
+      try {
+        setTtLoading(true);
+        setTtError("");
+
+        const data = await fetchTimetable();
+
+        // ✅ Sort: Grade 6->11, then Mon->Sun, then time
+        const sorted = (data || []).slice().sort((a, b) => {
+          const gA = gradeOrder[a.grade] ?? 999;
+          const gB = gradeOrder[b.grade] ?? 999;
+          if (gA !== gB) return gA - gB;
+
+          const dA = dayOrder[a.day] ?? 999;
+          const dB = dayOrder[b.day] ?? 999;
+          if (dA !== dB) return dA - dB;
+
+          return timeToMinutes(a.time) - timeToMinutes(b.time);
+        });
+
+        if (mounted) setTimetable(sorted);
+      } catch (e) {
+        if (mounted) setTtError("Failed to load timetable. Please refresh.");
+      } finally {
+        if (mounted) setTtLoading(false);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-white font-sans text-slate-900 selection:bg-indigo-100">
@@ -92,7 +176,11 @@ export default function LandingPage() {
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur border-4 border-slate-200">
         <div className="max-w-7xl mx-auto px-6 md:px-10 py-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <img src={logo} alt="ALGEON Logo" className="h-auto md:h-16 w-auto object-contain" />
+            <img
+              src={logo}
+              alt="ALGEON Logo"
+              className="h-auto md:h-16 w-auto object-contain"
+            />
           </div>
 
           <div className="hidden md:flex gap-8 font-semibold text-slate-600">
@@ -126,21 +214,19 @@ export default function LandingPage() {
 
       {/* HERO (LEFT TEXT | MIDDLE LOGIN | RIGHT IMAGE) */}
       <section className="relative max-w-7xl mx-auto px-6 pt-10 pb-5">
-
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           {/* LEFT */}
           <div className="lg:col-span-5">
             <h1 className="text-4xl md:text-5xl font-black leading-tight tracking-tight">
               Master <span className="text-indigo-600">Mathematics</span>
               <br />
-              with Clarity and{" "}
-              <br />
+              with Clarity and <br />
               Precision
             </h1>
 
             <p className="mt-5 text-slate-500 text-lg max-w-xl leading-relaxed">
-              Interactive calculus, algebra, and geometry modules. Master complex theorems through visualized logic and
-              real-time problem-solving.
+              Interactive calculus, algebra, and geometry modules. Master complex
+              theorems through visualized logic and real-time problem-solving.
             </p>
 
             <div className="mt-8 flex items-center gap-6">
@@ -160,21 +246,28 @@ export default function LandingPage() {
           {/* MIDDLE LOGIN */}
           <div className="lg:col-span-4 flex justify-center">
             <div className="w-full max-w-md">
-              <LoginForm title="Login" subtitle="Sign in to access the dashboard" onSuccess={() => {}} />
+              <LoginForm
+                title="Login"
+                subtitle="Sign in to access the dashboard"
+                onSuccess={() => {}}
+              />
             </div>
           </div>
 
           {/* RIGHT IMAGE */}
-          <div className="lg:col-span-3 relative ">
-            <div className="absolute -top-12 right-6 h-96 w-96 " />
-            <img src={Man} alt="Student" className="h-86 w-105" />
+          <div className="lg:col-span-3 relative">
+            <div className="absolute -top-12 right-6 h-96 w-96" />
+            <img src={Man} alt="Student" className="h-86 w-105 object-contain" />
           </div>
         </div>
-        <br/>
-        <hr></hr>
+
+        <br />
+        <hr />
 
         <div className="mt-2 text-center">
-          <h2 className="text-xl font-bold text-yellow-600">" The Core Entity of Algebra and Logical Thinking "</h2>
+          <h2 className="text-xl font-bold text-yellow-600">
+            " The Core Entity of Algebra and Logical Thinking "
+          </h2>
         </div>
       </section>
 
@@ -197,13 +290,17 @@ export default function LandingPage() {
             <div className="text-indigo-100 font-semibold">Exam Success</div>
           </div>
           <div className="min-w-45">
-            <div className="text-4xl font-black mb-1">Step-by-step</div>
-            <div className="text-indigo-100 font-semibold">mathematical derivations</div>
+            <div className="text-4xl font-black mb-1">150 +</div>
+            <div className="text-indigo-100 font-semibold">Students</div>
+          </div>
+          <div className="min-w-45 text-center">
+            <div className="text-4xl font-black mb-1">100%</div>
+            <div className="text-indigo-100 font-semibold">Syllabus Covered</div>
           </div>
         </div>
       </div>
 
-      {/* WHY WE ARE BEST (NEW DESIGN) */}
+      {/* WHY WE ARE BEST */}
       <section className="relative max-w-7xl mx-auto px-6 md:px-10 py-20">
         <div className="absolute top-20 left-0 w-72 h-72 bg-purple-50 rounded-full blur-3xl -z-10" />
 
@@ -215,12 +312,12 @@ export default function LandingPage() {
             </span>
           </h2>
           <p className="text-slate-500 max-w-2xl mx-auto mt-6 text-lg">
-            Student-centered learning with simplified teaching methods, continuous evaluation, and personal attention to
-            ensure academic success.
+            Student-centered learning with simplified teaching methods,
+            continuous evaluation, and personal attention to ensure academic
+            success.
           </p>
         </div>
 
-        {/* NEW CARD STYLE */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {cards.map((c, i) => {
             const Icon = c.icon;
@@ -229,17 +326,14 @@ export default function LandingPage() {
                 key={i}
                 className="group relative overflow-hidden rounded-4xl border border-slate-100 bg-white shadow-[0_10px_30px_rgba(2,6,23,0.06)] hover:shadow-[0_20px_60px_rgba(79,70,229,0.18)] transition-all duration-300 hover:-translate-y-2"
               >
-                {/* image */}
                 <img
                   src={c.image}
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover scale-105 group-hover:scale-110 transition-transform duration-700"
                 />
 
-                {/* gradient overlay */}
                 <div className={`absolute inset-0 bg-linear-to-b ${c.tint} to-white/95`} />
 
-                {/* content */}
                 <div className="relative p-8">
                   <div className="flex items-center justify-between">
                     <div className="w-14 h-14 rounded-2xl bg-white/80 backdrop-blur flex items-center justify-center border border-white/60">
@@ -255,9 +349,7 @@ export default function LandingPage() {
                     {c.title}
                   </h3>
 
-                  <p className="mt-3 text-slate-700 leading-relaxed">
-                    {c.desc}
-                  </p>
+                  <p className="mt-3 text-slate-700 leading-relaxed">{c.desc}</p>
 
                   <div className="mt-6 flex items-center gap-2 text-sm font-bold text-indigo-700">
                     <span className="inline-block h-2 w-2 rounded-full bg-indigo-600" />
@@ -270,14 +362,15 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CLASS TIMETABLE */}
+      {/* CLASS TIMETABLE (DB) */}
       <section className="max-w-6xl mx-auto px-6 md:px-10 py-0">
         <div className="mb-10 text-center">
           <h2 className="text-4xl md:text-5xl font-black mb-4">
             Class <span className="text-indigo-600">Timetable</span>
           </h2>
           <p className="text-slate-500 text-lg max-w-2xl mx-auto">
-            Weekly Mathematics classes for Grades 6–11 covering both theory lessons and paper-based exam practice.
+            Weekly Mathematics classes for Grades 6–11 covering both theory
+            lessons and paper-based exam practice.
           </p>
         </div>
 
@@ -288,23 +381,51 @@ export default function LandingPage() {
                 <th className="px-6 py-5 text-sm font-black uppercase">Grade</th>
                 <th className="px-6 py-5 text-sm font-black uppercase">Day</th>
                 <th className="px-6 py-5 text-sm font-black uppercase">Time</th>
-                <th className="px-6 py-5 text-sm font-black uppercase text-center">Class Type</th>
+                <th className="px-6 py-5 text-sm font-black uppercase text-center">
+                  Class Type
+                </th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-slate-200">
-              {timetable.map((row, i) => (
-                <tr key={i} className="hover:bg-indigo-50 transition">
-                  <td className="px-6 py-4 font-black text-indigo-700">{row.grade}</td>
-                  <td className="px-6 py-4 font-semibold text-slate-700">{row.day}</td>
-                  <td className="px-6 py-4 text-slate-600 font-semibold">{row.time}</td>
-                  <td className="px-6 py-4 text-center">
-                    <span className="px-4 py-2 rounded-full text-xs font-black uppercase bg-amber-100 text-amber-700">
-                      Theory & Paper
-                    </span>
+              {ttLoading && (
+                <tr>
+                  <td colSpan="4" className="px-6 py-8 text-center text-slate-500 font-semibold">
+                    Loading timetable...
                   </td>
                 </tr>
-              ))}
+              )}
+
+              {!ttLoading && ttError && (
+                <tr>
+                  <td colSpan="4" className="px-6 py-8 text-center text-red-600 font-bold">
+                    {ttError}
+                  </td>
+                </tr>
+              )}
+
+              {!ttLoading &&
+                !ttError &&
+                timetable.map((row) => (
+                  <tr key={row._id} className="hover:bg-indigo-50 transition">
+                    <td className="px-6 py-4 font-black text-indigo-700">{row.grade}</td>
+                    <td className="px-6 py-4 font-semibold text-slate-700">{row.day}</td>
+                    <td className="px-6 py-4 text-slate-600 font-semibold">{row.time}</td>
+                    <td className="px-6 py-4 text-center">
+                      <span className="px-4 py-2 rounded-full text-xs font-black uppercase bg-amber-100 text-amber-700">
+                        {row.classType || "Theory & Paper"}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+
+              {!ttLoading && !ttError && timetable.length === 0 && (
+                <tr>
+                  <td colSpan="4" className="px-6 py-8 text-center text-slate-500 font-semibold">
+                    No timetable data yet
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -337,7 +458,9 @@ export default function LandingPage() {
           </div>
 
           <div>
-            <h4 className="font-black text-lg mb-6 border-b border-slate-800 pb-2 inline-block">About</h4>
+            <h4 className="font-black text-lg mb-6 border-b border-slate-800 pb-2 inline-block">
+              About
+            </h4>
             <ul className="text-slate-400 space-y-3 font-semibold">
               <li className="hover:text-white transition-colors cursor-pointer">Our Story</li>
               <li className="hover:text-white transition-colors cursor-pointer">Classes</li>
@@ -347,7 +470,9 @@ export default function LandingPage() {
           </div>
 
           <div>
-            <h4 className="font-black text-lg mb-6 border-b border-slate-800 pb-2 inline-block">Company</h4>
+            <h4 className="font-black text-lg mb-6 border-b border-slate-800 pb-2 inline-block">
+              Company
+            </h4>
             <ul className="text-slate-400 space-y-3 font-semibold">
               <li className="hover:text-white transition-colors cursor-pointer">Membership</li>
               <li className="hover:text-white transition-colors cursor-pointer">Terms of Service</li>
@@ -357,7 +482,9 @@ export default function LandingPage() {
           </div>
 
           <div>
-            <h4 className="font-black text-lg mb-6 border-b border-slate-800 pb-2 inline-block">Support</h4>
+            <h4 className="font-black text-lg mb-6 border-b border-slate-800 pb-2 inline-block">
+              Support
+            </h4>
             <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-800">
               <p className="text-sm text-slate-300 mb-2">Email us at:</p>
               <p className="font-black text-indigo-400 mb-4">info@algeon.com</p>

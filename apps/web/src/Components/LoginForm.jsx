@@ -1,13 +1,15 @@
 import { useState } from "react";
 import axios from "axios";
 import { Mail, Lock, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginForm({
-  title = "Admin Login",
+  title = "Login",
   subtitle = "Sign in to access the dashboard",
   onClose,
-  onSuccess,
 }) {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
@@ -24,38 +26,47 @@ export default function LoginForm({
         password,
       });
 
-      localStorage.setItem("accessToken", res.data.accessToken);
-      setMsg("Login successful");
+      const { accessToken, user } = res.data;
 
-      if (onSuccess) onSuccess(res.data.accessToken, res);
+      // ✅ store token + user (recommended)
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("role", user.role);
+
+      setMsg("✅ Login successful");
+
+      // ✅ Role-based navigation
+      if (user.role === "ADMIN") {
+        navigate("/admin");
+      } else if (user.role === "STUDENT") {
+        navigate("/student");
+      } else {
+        setMsg("⚠️ Your account role is not supported");
+      }
     } catch (err) {
-      setMsg("❌ Invalid email or password");
+      setMsg(err.response?.data?.message || "❌ Invalid email or password");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="w-full max-w-md rounded-2xl p-6 shadow-sm bg-white relative top-">
-      {/* Close Button */}
+    <div className="w-full max-w-md rounded-2xl p-6 shadow-sm bg-white relative">
       {onClose && (
         <button
           onClick={onClose}
-          className="absolute top-8 right-4 p-2 rounded-xl"
+          className="absolute top-4 right-4 p-2 rounded-xl"
         >
           <X size={18} />
         </button>
       )}
 
-      {/* Header */}
       <div className="text-center mb-8">
         <h2 className="text-3xl font-black text-slate-900">{title}</h2>
         <p className="mt-2 text-sm text-slate-500">{subtitle}</p>
       </div>
 
-      {/* Form */}
-      <form onSubmit={handleLogin} className="space-y-8">
-        {/* Email */}
+      <form onSubmit={handleLogin} className="space-y-6">
         <div>
           <label className="block text-sm font-semibold text-slate-700 mb-2">
             Email Address
@@ -73,7 +84,6 @@ export default function LoginForm({
           </div>
         </div>
 
-        {/* Password */}
         <div>
           <label className="block text-sm font-semibold text-slate-700 mb-2">
             Password
@@ -91,7 +101,6 @@ export default function LoginForm({
           </div>
         </div>
 
-        {/* Button */}
         <button
           type="submit"
           disabled={loading}
@@ -101,9 +110,8 @@ export default function LoginForm({
         </button>
       </form>
 
-      {/* Message */}
       {msg && (
-        <p className="mt-6 text-center text-sm font-medium text-slate-600">
+        <p className="mt-5 text-center text-sm font-semibold text-slate-600">
           {msg}
         </p>
       )}
