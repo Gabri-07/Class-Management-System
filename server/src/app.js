@@ -7,6 +7,7 @@ const studentRoutes = require("./routes/student.routes");
 const timetableRoutes = require("./routes/timetable.routes");
 const attendanceRoutes = require("./routes/attendance.routes");
 const feeRoutes = require("./routes/fees.routes");
+const noticeRoutes = require("./routes/notices.routes");
 
 const app = express();
 
@@ -18,12 +19,13 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-app.get("/", (req, res) => res.send("CMS API running ✅"));
+app.get("/", (req, res) => res.send("CMS API running successfully"));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/timetable", timetableRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/fees", feeRoutes);
+app.use("/api/notices", noticeRoutes);
 
 module.exports = app;

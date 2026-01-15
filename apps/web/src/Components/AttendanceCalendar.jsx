@@ -12,8 +12,8 @@ const WEEKDAY_NAMES = [
 ];
 
 const MONTH_NAMES = [
-  "January","February","March","April","May","June",
-  "July","August","September","October","November","December"
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
 ];
 
 function ymd(d) {
@@ -25,9 +25,9 @@ function ymd(d) {
 
 export default function AttendanceCalendar({
   year,
-  month, // 0-11
-  timetableDays = {},   // { Monday:true, Saturday:true }
-  attendanceMap = {},   // { "2026-01-18":"PRESENT" }
+  month,
+  timetableDays = {},
+  attendanceMap = {},
   onPrev,
   onNext,
 }) {
@@ -57,7 +57,6 @@ export default function AttendanceCalendar({
     return result;
   }, [year, month]);
 
-  // ✅ letter for each status
   const letterMap = {
     PRESENT: "P",
     ABSENT: "A",
@@ -66,10 +65,8 @@ export default function AttendanceCalendar({
     PENDING: "•",
   };
 
-  // ✅ whole cell background colors
   function cellStyle(status, inMonth) {
     const base = inMonth ? "border-slate-200" : "border-slate-100 opacity-60";
-
     if (!status) return `bg-white ${base}`;
 
     const map = {
@@ -83,7 +80,6 @@ export default function AttendanceCalendar({
     return `${map[status] || "bg-white border-slate-200"} ${!inMonth ? "opacity-60" : ""}`;
   }
 
-  // ✅ letter color
   function letterColor(status) {
     const map = {
       PRESENT: "text-emerald-700",
@@ -96,41 +92,40 @@ export default function AttendanceCalendar({
   }
 
   return (
-    <div className="rounded-2xl bg-white border border-slate-200 p-4 shadow-sm">
+    <div className="rounded-2xl bg-white border border-slate-200 px-3 py-3 shadow-sm relative -mt-3">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-base font-black text-slate-900">Attendance Calendar</h3>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h3 className="text-lg font-black text-slate-900">Attendance Calendar</h3>
+          <p className="text-[11px] text-slate-500 mt-0.5">
             {MONTH_NAMES[month]} {year}
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <button
             onClick={onPrev}
-            className="rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-xs font-extrabold hover:bg-slate-100"
+            className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] font-extrabold hover:bg-slate-100"
           >
             ◀
           </button>
           <button
             onClick={onNext}
-            className="rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-xs font-extrabold hover:bg-slate-100"
+            className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] font-extrabold hover:bg-slate-100"
           >
             ▶
           </button>
         </div>
       </div>
 
-      {/* Week labels */}
-      <div className="mt-3 grid grid-cols-7 gap-1">
+      {/* Week labels + Cells */}
+      <div className="mt-2 grid grid-cols-7 gap-0.75">
         {WEEKDAYS.map((w) => (
-          <div key={w} className="text-[11px] font-extrabold text-slate-500 text-center">
+          <div key={w} className="text-[10px] font-extrabold text-slate-500 text-center">
             {w}
           </div>
         ))}
 
-        {/* Cells */}
         {cells.map((c, idx) => {
           const d = c.date;
           const key = ymd(d);
@@ -145,25 +140,25 @@ export default function AttendanceCalendar({
           return (
             <div
               key={idx}
-              className={`rounded-xl border p-2 ${cellStyle(status, c.inMonth)} min-h-9.5`}
+              className={`rounded-md border px-1 py-1 ${cellStyle(status, c.inMonth)} min-h-10.5`}
             >
               <div className="flex items-start justify-between">
-                <span className={`text-[11px] font-black ${c.inMonth ? "text-slate-900" : "text-slate-400"}`}>
+                <span className={`text-[10px] font-black ${c.inMonth ? "text-slate-900" : "text-slate-400"}`}>
                   {d.getDate()}
                 </span>
 
                 {isClassDay && (
-                  <span className={`text-sm font-black ${letterColor(status)}`}>
+                  <span className={`text-[12px] font-black ${letterColor(status)}`}>
                     {letterMap[status]}
                   </span>
                 )}
               </div>
 
-              <div className="mt-1">
+              <div className="mt-0.5">
                 {!isClassDay ? (
-                  <p className="text-[10px] text-slate-400 font-semibold">No class</p>
+                  <p className="text-[9px] text-slate-400 font-semibold leading-tight">No class</p>
                 ) : (
-                  <p className="text-[10px] text-slate-600 font-semibold">
+                  <p className="text-[9px] text-slate-600 font-semibold leading-tight">
                     {isTimetableClassDay ? "Class" : "Extra"}
                   </p>
                 )}
@@ -173,22 +168,22 @@ export default function AttendanceCalendar({
         })}
       </div>
 
-      {/* Legend (compact) */}
-      <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-extrabold text-slate-600">
+      {/* Legend */}
+      <div className="mt-2 flex flex-wrap gap-2 text-[10px] font-extrabold text-slate-600">
         <span className="inline-flex items-center gap-1">
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" /> Present
+          <span className="h-2 w-2 rounded-full bg-emerald-400" /> Present
         </span>
         <span className="inline-flex items-center gap-1">
-          <span className="h-2.5 w-2.5 rounded-full bg-rose-400" /> Absent
+          <span className="h-2 w-2 rounded-full bg-rose-400" /> Absent
         </span>
         <span className="inline-flex items-center gap-1">
-          <span className="h-2.5 w-2.5 rounded-full bg-amber-400" /> Late
+          <span className="h-2 w-2 rounded-full bg-amber-400" /> Late
         </span>
         <span className="inline-flex items-center gap-1">
-          <span className="h-2.5 w-2.5 rounded-full bg-sky-400" /> Extra Class
+          <span className="h-2 w-2 rounded-full bg-sky-400" /> Extra
         </span>
         <span className="inline-flex items-center gap-1">
-          <span className="h-2.5 w-2.5 rounded-full bg-slate-300" /> Pending
+          <span className="h-2 w-2 rounded-full bg-slate-300" /> Pending
         </span>
       </div>
     </div>
