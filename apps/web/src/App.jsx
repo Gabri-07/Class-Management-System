@@ -5,6 +5,7 @@ import LandingPage from "./pages/Landing";
 import AlgeonLoader from "./Components/AlgeonLoader";
 import AdminDashboard from "./pages/AdminDashboard";
 import StudentDashboard from "./pages/StudentDashboard";
+import AdminStudentDashboard from "./pages/AdminStudentDashboard";
 
 function AdminRoute({ children }) {
   const token = localStorage.getItem("accessToken");
@@ -30,6 +31,7 @@ function App() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/student" element={<StudentDashboard />} />
+
             <Route
               path="/admin"
               element={
@@ -38,6 +40,16 @@ function App() {
                 </AdminRoute>
               }
             />
+
+            <Route
+              path="/admin/students/:studentUserId"
+              element={
+                <AdminRoute>
+                  <AdminStudentDashboard />
+                </AdminRoute>
+              }
+            />
+
           </Routes>
         </BrowserRouter>
       )}

@@ -1,7 +1,7 @@
 import logo from "../Assets/Landing_Logo_icon.png";
 
 export default function AdminNavbar({ activeTab, setActiveTab, onLogout }) {
-  const tabs = ["Timetable", "Students", "Marks", "Attendance"];
+  const tabs = ["Timetable", "Students"];
 
   return (
     <div className="bg-white border-b border-slate-200">
