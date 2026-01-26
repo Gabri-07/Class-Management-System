@@ -23,9 +23,9 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: Install dependencies
-      working-directory: web
+      working-directory: apps/web
       run: npm install
 
-    - name: Build with Vite
-      working-directory: web
+    - name: Build frontend with Vite
+      working-directory: apps/web
       run: npm run build
